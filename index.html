@@ -169,7 +169,7 @@
                         <span class="font-extrabold">A</span>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Audit & Laporan Mandiri</h3>
-                    <p class="text-gray-600"><strong style="color: #059669;">Auto-ALPA</strong>, penandaan <strong class="text-dark-pro">Terlambat</strong> otomatis di Excel, dan laporan mingguan otomatis ke orang tua yang bersangkutan.</p>
+                    <p class="text-gray-600">Laporan Excel sudah <strong class="text-dark-pro">tersortir rapih</strong> dengan <strong style="color: #059669;">rumus ringkasan otomatis</strong> harian, dilengkapi **Auto-ALPA**, dan penandaan Terlambat.</p>
                 </div>
 
                 <div class="p-8 bg-gray-light rounded-xl shadow-elegant hover:bg-gray-200 transition duration-300 feature-box animate-on-scroll" data-delay="450">
@@ -191,7 +191,7 @@
             </h2>
             <div class="divider-line animate-on-scroll" style="animation-delay: 0.2s;"></div>
             <p class="text-xl text-gray-600 max-w-4xl mx-auto mb-16 animate-on-scroll" style="animation-delay: 0.4s;">
-                Lihat langsung bagaimana tiga komponen utama sistem PDC bekerja di lapangan, dari antarmuka pengguna hingga notifikasi otomatis.
+                Lihat langsung bagaimana tiga komponen utama sistem PDC bekerja di lapangan, dari antarmuka pengguna hingga notifikasi otomatis. Klik gambar untuk memperbesar!
             </p>
             
             <div class="grid md:grid-cols-3 gap-10">
@@ -239,7 +239,7 @@
                 <div class="md:grid md:grid-cols-2 gap-12 items-center">
                     <div class="md:order-2">
                         <h3 class="text-3xl font-bold mb-4 text-primary-blue">Sistem Penjadwalan Tugas Kritis</h3>
-                        <p class="text-gray-400 text-lg mb-4">Discord Bot menjalankan semua tugas operasional penting tanpa perlu pengawasan manual, memastikan data kehadiran selalu *up-to-date* dan terlapor.</p>
+                        <p class="text-gray-400 text-lg mb-4">Bot menjalankan semua tugas operasional penting tanpa perlu pengawasan manual, memastikan data kehadiran selalu *up-to-date* dan terlapor.</p>
                         <ul class="list-disc list-inside text-gray-300 space-y-2">
                             <li>Laporan Peringatan <span class="strong-emphasis">Keterlambatan Harian</span> secara otomatis.</li>
                             <li>Penetapan status <span class="strong-emphasis">ALPA Otomatis</span> (tanpa intervensi manusia) bagi yang belum absen setelah jam batas.</li>
@@ -258,7 +258,7 @@
                         <h3 class="text-3xl font-bold mb-4 text-primary-blue">Pemrosesan Kamera Multi-Tasking</h3>
                         <p class="text-gray-400 text-lg mb-4">Sistem kamera absensi menggunakan teknik <strong class="text-primary-blue">Multi-Tasking</strong> yang canggih untuk memisahkan proses pengambilan gambar dari proses deteksi wajah/barcode. Ini memastikan:</p>
                         <ul class="list-disc list-inside text-gray-300 space-y-2">
-                            <li>Antarmuka GUI <strong class="text-primary-blue">tidak pernah *freeze*</strong>.</li>
+                            <li>Antarmuka GUI <strong class="text-primary-blue">tidak pernah freeze</strong>.</li>
                             <li>Kecepatan deteksi tetap optimal meskipun pemrosesan AI Dlib berjalan.</li>
                             <li>Operator dapat berinteraksi dengan tombol pendaftaran/manual tanpa hambatan.</li>
                         </ul>
@@ -271,32 +271,37 @@
             </div>
         </div>
     </section>
-
+    
     <section id="integrasi" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-4xl font-bold mb-3 text-dark-pro animate-on-scroll">
-                Arsitektur Deployment yang Stabil
+                Arsitektur Deployment yang Stabil & Efisien
             </h2>
             <div class="divider-line animate-on-scroll" style="animation-delay: 0.2s;"></div>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-16 animate-on-scroll" style="animation-delay: 0.4s;">
-                Sistem memiliki struktur <strong class="text-dark-pro">Dual-Component</strong> yang kuat, memastikan satu komponen tidak menjatuhkan komponen lainnya.
+                Sistem memiliki struktur <strong class="text-dark-pro">Dual-Component</strong> yang kuat, yang dijalankan dengan **satu kali klik** dan membutuhkan *hardware* minimal.
             </p>
 
             <div class="grid md:grid-cols-3 gap-8 text-left architecture-text">
                 
                 <div class="p-6 border-l-4 border-primary-blue shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="0">
-                    <h3 class="text-2xl font-semibold text-primary-blue mb-3">1. Absensi GUI (<span class="text-dark-pro">absensi.py</span>)</h3>
+                    <h3 class="text-2xl font-semibold text-primary-blue mb-3">1. Absensi & Pengumpulan Data</h3>
                     <p class="text-gray-600">Fokus pada <strong class="text-dark-pro">Deteksi Real-Time</strong> dan **Absensi Manual**. Berfungsi sebagai *front-end* pengumpulan data.</p>
                 </div>
                 
                 <div class="p-6 border-l-4 border-accent-green shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="150">
                     <h3 class="text-2xl font-semibold text-accent-green mb-3">2. Sinyal Komunikasi File</h3>
-                    <p class="text-gray-600">Bertindak sebagai *message queue* sederhana (<span class="text-dark-pro">notif\_queue.json</span>). Ini memastikan Discord Bot <strong class="text-dark-pro">tidak terpengaruh</strong> oleh *crash* atau *restart* pada GUI Absensi.</p>
+                    <p class="text-gray-600">Bertindak sebagai *message queue* sederhana. Ini memastikan Bot <strong class="text-dark-pro">tidak terpengaruh</strong> oleh *crash* atau *restart* pada modul Absensi.</p>
                 </div>
                 
                 <div class="p-6 border-l-4 border-primary-blue shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="300">
-                    <h3 class="text-2xl font-semibold text-primary-blue mb-3">3. Discord Bot (<span class="text-dark-pro">discord\_bot.py</span>)</h3>
-                    <p class="text-gray-600">Fokus pada **Notifikasi**, **Laporan Otomatis**, dan **Panel Kontrol Admin**. Beroperasi sebagai *daemon* yang stabil, terpisah dari GUI.</p>
+                    <h3 class="text-2xl font-semibold text-primary-blue mb-3">3. Modul Notifikasi & Kontrol</h3>
+                    <p class="text-gray-600">Fokus pada **Notifikasi**, **Laporan Otomatis**, dan **Panel Kontrol Admin**. Beroperasi sebagai *daemon* yang stabil, terpisah.</p>
+                </div>
+                
+                <div class="p-6 col-span-full border-t-2 border-primary-blue mt-8">
+                     <h3 class="text-2xl font-semibold text-dark-pro mb-3 text-center">Persyaratan Hardware Minimal (Efisiensi Biaya)</h3>
+                     <p class="text-xl text-gray-600 text-center">Anda hanya membutuhkan <strong class="text-primary-blue">satu buah Laptop/PC</strong> dan <strong class="text-primary-blue">Webcam standar</strong> (atau bahkan **HP/Smartphone yang dijadikan client kamera**) untuk menjalankan seluruh sistem secara penuh.</p>
                 </div>
             </div>
             
