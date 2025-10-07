@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PRESENSI DIGITAL CERDAS (PDC) - Enterprise Solution</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -17,17 +17,22 @@
                     },
                     keyframes: {
                         'fade-in-up': {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
                         },
-                        'slide-in-right': {
-                            '0%': { opacity: '0', transform: 'translateX(50px)' },
+                        'slide-in-left': {
+                            '0%': { opacity: '0', transform: 'translateX(-40px)' },
                             '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        'pulse-scale': {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' },
                         }
                     },
                     animation: {
-                        'fade-in-up': 'fade-in-up 1s ease-out forwards',
-                        'slide-in-right': 'slide-in-right 1s ease-out forwards',
+                        'fade-in-up': 'fade-in-up 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
+                        'slide-in-left': 'slide-in-left 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
+                        'pulse-scale': 'pulse-scale 2s infinite ease-in-out',
                     }
                 }
             }
@@ -35,192 +40,257 @@
     </script>
     <style>
         /* CSS Kustom */
-        body { background-color: #F3F4F6; color: #1F2937; scroll-behavior: smooth; }
-        .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        .animated { opacity: 1; transform: translateY(0); }
-        .shadow-elegant { box-shadow: 0 10px 15px -3px rgba(31, 41, 55, 0.1), 0 4px 6px -2px rgba(31, 41, 55, 0.05); }
-        .image-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04); transition: transform 0.3s ease-in-out; cursor: pointer; }
-        .image-shadow:hover { transform: scale(1.02); }
-        .divider-line { height: 3px; width: 80px; margin: 0 auto 2rem; background-color: #1D4ED8; }
+        body { 
+            background-color: #F3F4F6; 
+            color: #1F2937; 
+            scroll-behavior: smooth; 
+            overflow-x: hidden; 
+            font-size: 16px; 
+        }
+
+        .transition-all {
+            transition: all 0.5s ease-in-out; 
+        }
+
+        /* Animasi On-Scroll Generik */
+        .animate-on-scroll { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+        }
+        .animated { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+
+        /* Efek Interaktif (Active) untuk Touchscreen */
+        .feature-box:active, 
+        .image-shadow:active,
+        .cta-button:active { 
+            transform: scale(0.98); 
+            box-shadow: 0 0 5px rgba(31, 41, 55, 0.3) !important;
+        }
+
+        /* Penyesuaian Style Lain */
+        .shadow-elegant { 
+            box-shadow: 0 5px 10px -3px rgba(31, 41, 55, 0.1), 0 2px 4px -2px rgba(31, 41, 55, 0.05); 
+        }
+        .image-shadow { 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+            transition: transform 0.3s ease-in-out; 
+            cursor: pointer; 
+        }
         
-        /* Penekanan Teks (Bold) yang Benar dan Jelas */
+        .divider-line { 
+            height: 3px; 
+            width: 60px; 
+            margin: 0 auto 2rem; 
+            background-color: #1D4ED8; 
+            transform: scaleX(0); 
+            transition: transform 1s ease-out;
+        }
+        .animated .divider-line {
+            transform: scaleX(1);
+        }
+        
+        /* Penekanan Teks */
         .feature-box strong, .hero-text strong, .architecture-text strong, .strong-emphasis { 
-            font-weight: 800; /* Extra bold */
-            color: #1D4ED8; /* Warna Biru */
+            font-weight: 800; 
+            color: #1D4ED8; 
         }
         .strong-green {
             font-weight: 800;
-            color: #059669; /* Warna Hijau Aksen */
+            color: #059669; 
         }
         
-        /* Gaya untuk Modal/Lightbox */
+        /* Gaya untuk Modal/Lightbox: Memungkinkan Zoom Gambar */
         .modal {
             display: none; 
             position: fixed; 
             z-index: 100;
-            padding-top: 50px; 
+            padding-top: 20px; 
             left: 0;
             top: 0;
             width: 100%; 
             height: 100%; 
             overflow: auto; 
-            background-color: rgb(0,0,0); 
             background-color: rgba(0,0,0,0.9); 
         }
 
         .modal-content {
             margin: auto;
             display: block;
-            width: 80%;
-            max-width: 1000px;
+            max-width: 95%; 
+            /* Memaksa zoom dan pan */
+            touch-action: pan-x pan-y; 
+            cursor: zoom-in;
+        }
+        
+        .modal-content img {
+            width: 100%;
+            height: auto;
         }
 
         .close {
             position: absolute;
-            top: 15px;
-            right: 35px;
+            top: 5px; 
+            right: 15px; 
             color: #f1f1f1;
-            font-size: 40px;
+            font-size: 30px; 
             font-weight: bold;
             transition: 0.3s;
         }
 
-        .close:hover,
-        .close:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
 
-    <nav class="sticky top-0 z-50 bg-white shadow-elegant">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+    <nav class="sticky top-0 z-50 bg-white shadow-elegant transition-all duration-300">
+        <div class="w-full px-4">
+            <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
-                    <span class="text-3xl font-extrabold text-primary-blue tracking-tight">PDC</span>
-                    <span class="ml-2 text-sm text-gray-500">| Enterprise Absensi</span>
+                    <span class="text-2xl font-extrabold text-primary-blue tracking-tight animate-pulse-scale">PDC</span>
+                    <span class="ml-1 text-xs text-gray-500 transition-all duration-300">| Enterprise Absensi</span>
                 </div>
-                <div class="flex space-x-6">
-                    <a href="#keunggulan" class="text-gray-700 font-medium hover:text-primary-blue transition duration-300">Solusi</a>
-                    <a href="#visual" class="text-gray-700 font-medium hover:text-primary-blue transition duration-300">Visual</a>
-                    <a href="#fitur" class="text-gray-700 font-medium hover:text-primary-blue transition duration-300">Fungsi</a>
-                    <a href="#integrasi" class="text-gray-700 font-medium hover:text-primary-blue transition duration-300">Integrasi</a>
+                <div class="flex space-x-3">
+                    <a href="#keunggulan" class="text-sm font-medium text-primary-blue border border-primary-blue rounded-full px-3 py-1 transition-all duration-300 active:bg-primary-blue active:text-white active:scale-95 cta-button">
+                        Solusi
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <header class="h-screen flex items-center bg-gray-light p-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 items-center">
+    <header class="min-h-screen flex items-center bg-gray-light p-4">
+        <div class="w-full mx-auto px-4 grid gap-8 items-center pt-10 pb-20"> 
             
             <div class="text-left">
-                <p class="text-xl text-primary-blue font-semibold mb-3 animate-fade-in-up" style="animation-delay: 0.1s;">
+                <p class="text-lg text-primary-blue font-semibold mb-2 animate-slide-in-left" style="animation-delay: 0.1s;">
                     Sistem Absensi Cerdas
                 </p>
-                <h1 class="text-5xl sm:text-6xl font-extrabold mb-6 leading-tight animate-fade-in-up" style="animation-delay: 0.3s;">
+                <h1 class="text-4xl font-extrabold mb-4 leading-snug animate-fade-in-up" style="animation-delay: 0.3s;">
                     <span class="block">PRESENSI DIGITAL CERDAS</span>
                     <span class="text-primary-blue">Otomatis & Real-Time</span>
                 </h1>
-                <p class="text-lg text-gray-600 mb-10 hero-text animate-fade-in-up" style="animation-delay: 0.5s;">
+                <p class="text-base text-gray-600 mb-8 hero-text animate-fade-in-up" style="animation-delay: 0.5s;">
                     Mengintegrasikan teknologi <strong style="color: #059669;">Face ID, Barcode, dan Discord Bot</strong> untuk manajemen kehadiran siswa yang terverifikasi dan notifikasi orang tua secara <strong style="color: #059669;">instan</strong>. Solusi yang <strong class="text-dark-pro">akurat, efisien, dan transparan</strong>.
                 </p>
-                <a href="#keunggulan" class="inline-block px-10 py-4 text-lg font-bold rounded-lg bg-primary-blue hover:bg-dark-pro text-white shadow-lg shadow-primary-blue/30 transition duration-300 transform hover:scale-105 animate-fade-in-up" style="animation-delay: 0.7s;">
-                    Lihat Solusi Kami &rarr;
+                <a href="#alasan" class="inline-block px-8 py-3 text-base font-bold rounded-lg bg-primary-blue hover:bg-dark-pro text-white shadow-lg shadow-primary-blue/30 transition-all duration-300 active:scale-95 animate-fade-in-up cta-button" style="animation-delay: 0.7s;">
+                    Mengapa Harus PDC? &rarr;
                 </a>
-            </div>
-
-            <div class="hidden md:block text-center animate-slide-in-right" style="animation-delay: 0.5s;">
-                <svg class="w-2/3 h-auto mx-auto text-primary-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-                <p class="mt-4 text-sm text-gray-500 italic">Otentikasi Ganda: Siswa & Orang Tua Terhubung</p>
             </div>
         </div>
     </header>
 
-    <section id="keunggulan" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-bold mb-3 text-dark-pro animate-on-scroll">
-                PDC: Solusi Kehadiran Terintegrasi
-            </h2>
-            <div class="divider-line animate-on-scroll" style="animation-delay: 0.2s;"></div>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-16 animate-on-scroll" style="animation-delay: 0.4s;">
-                Kami menyediakan sistem lengkap yang mengatasi masalah <strong class="text-dark-pro">keterlambatan pencatatan, transparansi orang tua, dan rekap manual</strong> yang rentan kesalahan.
-            </p>
+    <section id="alasan" class="py-16 bg-white"> 
+        <div class="w-full mx-auto px-4 text-center">
+            <div class="animate-on-scroll" data-delay="0"> 
+                <h2 class="text-3xl font-bold mb-2 text-dark-pro">
+                    Kenapa PDC adalah Investasi Terbaik?
+                </h2>
+                <div class="divider-line bg-accent-green"></div> 
+                <p class="text-lg text-gray-600 max-w-xl mx-auto mb-12">
+                    Beralih dari sistem tradisional ke PDC adalah langkah nyata menuju efisiensi, akurasi data, dan peningkatan komunikasi.
+                </p>
+            </div>
             
-            <div class="grid md:grid-cols-4 gap-8">
+            <div class="grid gap-6"> 
                 
-                <div class="p-8 bg-gray-light rounded-xl shadow-elegant hover:bg-gray-200 transition duration-300 feature-box animate-on-scroll" data-delay="0">
-                    <div class="text-4xl text-primary-blue mb-4">
+                <div class="p-6 bg-gray-light rounded-xl shadow-elegant transition-all duration-500 feature-box animate-on-scroll" data-delay="100">
+                    <div class="text-3xl text-primary-blue mb-3">
+                        <span class="font-extrabold">✓</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Menghemat Waktu Administrasi 90%</h3>
+                    <p class="text-gray-600 text-sm">Tidak ada lagi rekap harian atau bulanan manual. Laporan Excel <strong class="strong-green">siap cetak</strong> dan terisi otomatis dengan status terlambat dan ALPA yang sudah terhitung.</p>
+                </div>
+
+                <div class="p-6 bg-gray-light rounded-xl shadow-elegant transition-all duration-500 feature-box animate-on-scroll" data-delay="200">
+                    <div class="text-3xl text-accent-green mb-3">
+                        <span class="font-extrabold">✓</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Transparansi Kehadiran Tak Tertandingi</h3>
+                    <p class="text-gray-600 text-sm">Orang tua menerima notifikasi <strong class="text-dark-pro">kurang dari 5 detik</strong> setelah anak mereka *tap out* atau *tap in*. Kepercayaan lembaga meningkat.</p>
+                </div>
+
+                <div class="p-6 bg-gray-light rounded-xl shadow-elegant transition-all duration-500 feature-box animate-on-scroll" data-delay="300">
+                    <div class="text-3xl text-primary-blue mb-3">
+                        <span class="font-extrabold">✓</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Studi Kasus: Absensi Manual</h3>
+                    <p class="text-gray-600 text-sm">Absen manual di kertas/Excel rentan **kesalahan entri**, **pemalsuan tanda tangan**, dan membutuhkan setidaknya <strong class="text-dark-pro">3 jam/minggu</strong> waktu staf untuk rekap dan audit. PDC menghapus kerumitan ini.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="keunggulan" class="py-16 bg-gray-light"> 
+        <div class="w-full mx-auto px-4 text-center">
+            <div class="animate-on-scroll" data-delay="0"> 
+                <h2 class="text-3xl font-bold mb-2 text-dark-pro">
+                    PDC: Solusi Kehadiran Terintegrasi
+                </h2>
+                <div class="divider-line"></div> 
+                <p class="text-lg text-gray-600 max-w-xl mx-auto mb-12" style="animation-delay: 0.4s;">
+                    Kami menyediakan sistem lengkap yang mengatasi masalah <strong class="text-dark-pro">keterlambatan pencatatan, transparansi orang tua, dan rekap manual</strong> yang rentan kesalahan.
+                </p>
+            </div>
+            
+            <div class="grid gap-6"> 
+                
+                <div class="p-6 bg-white rounded-xl shadow-elegant transition-all duration-500 feature-box animate-on-scroll" data-delay="100">
+                    <div class="text-3xl text-primary-blue mb-3 transition-all duration-500">
                         <span class="font-extrabold">F</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Verifikasi Biometrik Cepat</h3>
-                    <p class="text-gray-600">Otentikasi <strong style="color: #059669;">sub-detik</strong> melalui wajah (Face ID) atau barcode, memastikan <strong class="text-dark-pro">kecepatan</strong> proses absensi tanpa antrian.</p>
+                    <h3 class="text-lg font-bold mb-2">Verifikasi Biometrik Cepat</h3>
+                    <p class="text-gray-600 text-sm">Otentikasi <strong style="color: #059669;">sub-detik</strong> melalui wajah (Face ID) atau barcode, memastikan <strong class="text-dark-pro">kecepatan</strong> proses absensi tanpa antrian.</p>
                 </div>
 
-                <div class="p-8 bg-gray-light rounded-xl shadow-elegant hover:bg-gray-200 transition duration-300 feature-box animate-on-scroll" data-delay="150">
-                    <div class="text-4xl text-accent-green mb-4">
+                <div class="p-6 bg-white rounded-xl shadow-elegant transition-all duration-500 feature-box animate-on-scroll" data-delay="200">
+                    <div class="text-3xl text-accent-green mb-3 transition-all duration-500">
                         <span class="font-extrabold">R</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Transparansi Real-Time</h3>
-                    <p class="text-gray-600">Notifikasi <strong style="color: #059669;">instan</strong> kepada orang tua melalui Discord DM saat absensi masuk/pulang dicatat. Transparansi <strong class="text-dark-pro">maksimal</strong>.</p>
+                    <h3 class="text-lg font-bold mb-2">Transparansi Real-Time</h3>
+                    <p class="text-gray-600 text-sm">Notifikasi <strong style="color: #059669;">instan</strong> kepada orang tua melalui Discord DM saat absensi masuk/pulang dicatat. Transparansi <strong class="text-dark-pro">maksimal</strong>.</p>
                 </div>
-
-                <div class="p-8 bg-gray-light rounded-xl shadow-elegant hover:bg-gray-200 transition duration-300 feature-box animate-on-scroll" data-delay="300">
-                    <div class="text-4xl text-primary-blue mb-4">
-                        <span class="font-extrabold">A</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Audit & Laporan Mandiri</h3>
-                    <p class="text-gray-600">Laporan Excel sudah <strong class="text-dark-pro">tersortir rapih</strong> dengan <strong style="color: #059669;">rumus ringkasan otomatis</strong> harian, dilengkapi <strong class="strong-green">Auto-ALPA</strong>, dan penandaan Terlambat.</p>
-                </div>
-
-                <div class="p-8 bg-gray-light rounded-xl shadow-elegant hover:bg-gray-200 transition duration-300 feature-box animate-on-scroll" data-delay="450">
-                    <div class="text-4xl text-accent-green mb-4">
-                        <span class="font-extrabold">E</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Pusat Kontrol Terpadu</h3>
-                    <p class="text-gray-600">Manajemen status <strong class="text-dark-pro">IZIN/SAKIT/ALPA</strong> terpusat melalui <strong class="text-dark-pro">Discord Admin Panel</strong> atau GUI, meminimalkan intervensi data.</p>
-                </div>
-                
             </div>
         </div>
     </section>
     
-    <section id="visual" class="py-24 bg-gray-light">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-bold mb-3 text-dark-pro animate-on-scroll">
-                Visual Showcase: Bukti Implementasi
-            </h2>
-            <div class="divider-line animate-on-scroll" style="animation-delay: 0.2s;"></div>
-            <p class="text-xl text-gray-600 max-w-4xl mx-auto mb-16 animate-on-scroll" style="animation-delay: 0.4s;">
-                Lihat langsung bagaimana tiga komponen utama sistem PDC bekerja di lapangan, dari antarmuka pengguna hingga notifikasi otomatis. Klik gambar untuk memperbesar!
-            </p>
+    <section id="visual" class="py-16 bg-white"> 
+        <div class="w-full mx-auto px-4 text-center">
+             <div class="animate-on-scroll" data-delay="0">
+                <h2 class="text-3xl font-bold mb-2 text-dark-pro">
+                    Visual Showcase: Bukti Implementasi
+                </h2>
+                <div class="divider-line"></div>
+                <p class="text-lg text-gray-600 max-w-xl mx-auto mb-12" style="animation-delay: 0.4s;">
+                    Lihat langsung bagaimana tiga komponen utama sistem PDC bekerja di lapangan. Klik gambar untuk memperbesar, dan **Anda tetap bisa memperbesar (zoom in/out) di dalam tampilan modal** untuk melihat detail!
+                </p>
+             </div>
             
-            <div class="grid md:grid-cols-3 gap-10">
+            <div class="grid gap-8">
                 
                 <div class="animate-on-scroll" data-delay="100">
-                    <div class="bg-white p-4 rounded-xl image-shadow" onclick="openModal('https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/1.PNG')">
+                    <div class="bg-gray-light p-3 rounded-xl image-shadow transition-all duration-300 active:scale-105" onclick="openModal('https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/1.PNG')"> 
                         <img src="https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/1.PNG" alt="GUI Absensi CustomTkinter" class="w-full h-auto rounded-lg border border-gray-200" loading="lazy">
                     </div>
-                    <h3 class="mt-4 text-xl font-bold text-primary-blue">Antarmuka GUI Absensi</h3>
+                    <h3 class="mt-3 text-xl font-bold text-primary-blue">Antarmuka GUI Absensi</h3>
                     <p class="text-gray-600 text-sm">Absensi Real-Time, Pendaftaran Siswa Baru, dan Kontrol Manual Cepat.</p>
                 </div>
                 
-                <div class="animate-on-scroll" data-delay="300">
-                    <div class="bg-white p-4 rounded-xl image-shadow" onclick="openModal('https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/2.PNG')">
+                <div class="animate-on-scroll" data-delay="250">
+                    <div class="bg-gray-light p-3 rounded-xl image-shadow transition-all duration-300 active:scale-105" onclick="openModal('https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/2.PNG')">
                         <img src="https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/2.PNG" alt="Notifikasi DM Discord Orang Tua" class="w-full h-auto rounded-lg border border-gray-200" loading="lazy">
                     </div>
-                    <h3 class="mt-4 text-xl font-bold text-accent-green">Notifikasi DM Orang Tua</h3>
+                    <h3 class="mt-3 text-xl font-bold text-accent-green">Notifikasi DM Orang Tua</h3>
                     <p class="text-gray-600 text-sm">Notifikasi Masuk/Pulang Instan ke Discord Orang Tua, meningkatkan keamanan.</p>
                 </div>
                 
-                <div class="animate-on-scroll" data-delay="500">
-                    <div class="bg-white p-4 rounded-xl image-shadow" onclick="openModal('https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/3.PNG')">
+                <div class="animate-on-scroll" data-delay="400">
+                    <div class="bg-gray-light p-3 rounded-xl image-shadow transition-all duration-300 active:scale-105" onclick="openModal('https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/3.PNG')">
                         <img src="https://raw.githubusercontent.com/Kawansejalanproduction2019/my-projek/main/3.PNG" alt="Admin Panel Discord Bot" class="w-full h-auto rounded-lg border border-gray-200" loading="lazy">
                     </div>
-                    <h3 class="mt-4 text-xl font-bold text-primary-blue">Panel Administrasi Bot</h3>
+                    <h3 class="mt-3 text-xl font-bold text-primary-blue">Panel Administrasi Bot</h3>
                     <p class="text-gray-600 text-sm">Pusat komando interaktif untuk Administrator (Izin/Sakit, Rekap, Tautkan Ortu).</p>
                 </div>
                 
@@ -228,95 +298,119 @@
         </div>
     </section>
 
-    <section id="fitur" class="py-24 bg-dark-pro text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-4xl font-bold text-center mb-3 text-white animate-on-scroll">
-                Fungsi Otomatisasi dan Pemrosesan Utama
-            </h2>
-            <div class="divider-line bg-accent-green animate-on-scroll" style="animation-delay: 0.2s;"></div>
-            <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16 animate-on-scroll" style="animation-delay: 0.4s;">
-                Sistem dirancang untuk beroperasi secara mandiri, mengurangi beban kerja manual staf administrasi.
-            </p>
+    <section id="fitur" class="py-16 bg-dark-pro text-white">
+        <div class="w-full mx-auto px-4">
+             <div class="animate-on-scroll" data-delay="0">
+                <h2 class="text-3xl font-bold text-center mb-2 text-white">
+                    Fungsi Otomatisasi dan Pemrosesan Utama
+                </h2>
+                <div class="divider-line bg-accent-green transition-all duration-500"></div>
+                <p class="text-lg text-gray-400 max-w-xl mx-auto text-center mb-12">
+                    Sistem dirancang untuk beroperasi secara mandiri, mengurangi beban kerja manual staf administrasi.
+                </p>
+            </div>
             
-            <div class="space-y-16">
+            <div class="space-y-12">
                 
-                <div class="md:grid md:grid-cols-2 gap-12 items-center">
-                    <div class="md:order-2">
-                        <h3 class="text-3xl font-bold mb-4 text-primary-blue">Sistem Penjadwalan Tugas Kritis</h3>
-                        <p class="text-gray-400 text-lg mb-4">Bot menjalankan semua tugas operasional penting tanpa perlu pengawasan manual, memastikan data kehadiran selalu *up-to-date* dan terlapor.</p>
-                        <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <div class="grid gap-8 items-center">
+                    <div class="order-2 animate-on-scroll" data-delay="100">
+                        <h3 class="text-2xl font-bold mb-3 text-primary-blue">Sistem Penjadwalan Tugas Kritis</h3>
+                        <p class="text-gray-400 text-base mb-4">Bot menjalankan semua tugas operasional penting tanpa perlu pengawasan manual, memastikan data kehadiran selalu <em>up-to-date</em> dan terlapor.</p>
+                        <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
                             <li>Laporan Peringatan <span class="strong-emphasis">Keterlambatan Harian</span> secara otomatis.</li>
-                            <li>Penetapan status <span class="strong-emphasis">ALPA Otomatis</span> (tanpa intervensi manusia) bagi yang belum absen setelah jam batas.</li>
-                            <li>Peringatan Pulang (Keluar) yang <span class="strong-emphasis">Terlupakan</span> di sore hari.</li>
-                            <li>Laporan Absensi <span class="strong-emphasis">Mingguan</span> otomatis ke Orang Tua yang anaknya memiliki masalah kehadiran.</li>
+                            <li>Penetapan status <span class="strong-emphasis">ALPA Otomatis</span> bagi yang belum absen setelah jam batas.</li>
                         </ul>
                     </div>
-                    <div class="md:order-1 bg-dark-pro/50 p-6 rounded-lg shadow-xl border border-primary-blue/50 mt-6 md:mt-0 animate-on-scroll" data-delay="600">
+                    <div class="order-1 bg-dark-pro/50 p-4 rounded-lg shadow-xl border border-primary-blue/50 mt-4 animate-slide-in-left" data-delay="300">
                         <h4 class="text-xl font-bold text-white mb-2">Benefit Bisnis: Akurasi Status & Audit</h4>
-                        <p class="text-gray-300">Sistem secara otomatis mengubah status siswa yang tidak terverifikasi setelah jam tertentu menjadi <strong class="text-primary-blue">ALPA</strong> di file rekap (Excel). Ini memastikan <strong class="text-primary-blue">keakuratan</strong> laporan akhir hari tanpa *delay* manual.</p>
+                        <p class="text-gray-300 text-sm">Sistem secara otomatis mengubah status siswa yang tidak terverifikasi setelah jam tertentu menjadi <strong class="text-primary-blue">ALPA</strong> di file rekap (Excel). Ini memastikan <strong class="text-primary-blue">keakuratan</strong> laporan akhir hari tanpa delay manual.</p>
                     </div>
                 </div>
 
-                <div class="md:grid md:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <h3 class="text-3xl font-bold mb-4 text-primary-blue">Pemrosesan Kamera Multi-Tasking</h3>
-                        <p class="text-gray-400 text-lg mb-4">Sistem kamera absensi menggunakan teknik <strong class="text-primary-blue">Multi-Tasking</strong> yang canggih untuk memisahkan proses pengambilan gambar dari proses deteksi wajah/barcode. Ini memastikan:</p>
-                        <ul class="list-disc list-inside text-gray-300 space-y-2">
-                            <li>Antarmuka GUI <strong class="text-primary-blue">tidak pernah *freeze*</strong>.</li>
-                            <li>Kecepatan deteksi tetap optimal meskipun pemrosesan AI Dlib berjalan.</li>
-                            <li>Operator dapat berinteraksi dengan tombol pendaftaran/manual tanpa hambatan.</li>
+                <div class="grid gap-8 items-center">
+                    <div class="animate-on-scroll" data-delay="100">
+                        <h3 class="text-2xl font-bold mb-3 text-primary-blue">Pemrosesan Kamera Multi-Tasking</h3>
+                        <p class="text-gray-400 text-base mb-4">Sistem kamera absensi menggunakan teknik <strong class="text-primary-blue">Multi-Tasking</strong> yang canggih untuk memisahkan proses pengambilan gambar dari proses deteksi wajah/barcode. Ini memastikan:</p>
+                        <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
+                            <li>Antarmuka GUI <strong class="text-primary-blue">tidak pernah freeze</strong>.</li>
                         </ul>
                     </div>
-                    <div class="bg-dark-pro/50 p-6 rounded-lg shadow-xl border border-accent-green/50 mt-6 md:mt-0 animate-on-scroll" data-delay="600">
+                    <div class="bg-dark-pro/50 p-4 rounded-lg shadow-xl border border-accent-green/50 mt-4 animate-slide-in-left" data-delay="300">
                         <h4 class="text-xl font-bold text-white mb-2">Benefit Bisnis: Stabilitas & UX Operator</h4>
-                        <p class="text-gray-300">Dengan memisahkan tugas (I/O Kamera dan AI Processing), sistem ini memberikan <strong class="text-primary-blue">stabilitas maksimal</strong>. Operator tidak akan mengalami *lag* saat memantau absensi atau mendaftarkan siswa baru.</p>
+                        <p class="text-gray-300 text-sm">Dengan memisahkan tugas, sistem ini memberikan <strong class="text-primary-blue">stabilitas maksimal</strong>. Operator tidak akan mengalami lag saat memantau absensi.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
     
-    <section id="integrasi" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-bold mb-3 text-dark-pro animate-on-scroll">
-                Arsitektur Deployment yang Stabil & Efisien
-            </h2>
-            <div class="divider-line animate-on-scroll" style="animation-delay: 0.2s;"></div>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-16 animate-on-scroll" style="animation-delay: 0.4s;">
-                Sistem memiliki struktur <strong class="text-dark-pro">Dual-Component</strong> yang kuat, yang dijalankan dengan <strong class="text-dark-pro">satu kali klik</strong> dan membutuhkan *hardware* minimal.
+    <section class="py-12 bg-primary-blue text-center animate-on-scroll" data-delay="200">
+        <div class="w-full mx-auto px-4">
+            <h3 class="text-2xl font-bold mb-3 text-white">
+                Siap Tinggalkan Kerumitan Absensi Manual?
+            </h3>
+            <p class="text-lg text-primary-blue-200 mb-6 text-gray-200">
+                <strong class="text-white">Akurasi, Transparansi, dan Efisiensi</strong>—semuanya ada di genggaman Anda.
             </p>
-
-            <div class="grid md:grid-cols-3 gap-8 text-left architecture-text">
-                
-                <div class="p-6 border-l-4 border-primary-blue shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="0">
-                    <h3 class="text-2xl font-semibold text-primary-blue mb-3">1. Absensi & Pengumpulan Data</h3>
-                    <p class="text-gray-600">Fokus pada <strong class="text-dark-pro">Deteksi Real-Time</strong> dan <strong class="text-dark-pro">Absensi Manual</strong>. Berfungsi sebagai *front-end* pengumpulan data.</p>
-                </div>
-                
-                <div class="p-6 border-l-4 border-accent-green shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="150">
-                    <h3 class="text-2xl font-semibold text-accent-green mb-3">2. Sinyal Komunikasi File</h3>
-                    <p class="text-gray-600">Bertindak sebagai *message queue* sederhana. Ini memastikan Bot <strong class="text-dark-pro">tidak terpengaruh</strong> oleh *crash* atau *restart* pada modul Absensi.</p>
-                </div>
-                
-                <div class="p-6 border-l-4 border-primary-blue shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="300">
-                    <h3 class="text-2xl font-semibold text-primary-blue mb-3">3. Modul Notifikasi & Kontrol</h3>
-                    <p class="text-gray-600">Fokus pada <strong class="text-dark-pro">Notifikasi</strong>, <strong class="text-dark-pro">Laporan Otomatis</strong>, dan <strong class="text-dark-pro">Panel Kontrol Admin</strong>. Beroperasi sebagai *daemon* yang stabil, terpisah.</p>
-                </div>
-                
-                <div class="p-6 col-span-full border-t-2 border-primary-blue mt-8">
-                     <h3 class="text-2xl font-semibold text-dark-pro mb-3 text-center">Persyaratan Hardware Minimal (Efisiensi Biaya)</h3>
-                     <p class="text-xl text-gray-600 text-center">Anda hanya membutuhkan <strong class="text-primary-blue">satu buah Laptop/PC</strong> dan <strong class="text-primary-blue">Webcam standar</strong> (atau bahkan <strong class="strong-green">HP/Smartphone yang dijadikan client kamera</strong>) untuk menjalankan seluruh sistem secara penuh.</p>
-                </div>
-            </div>
-            
-            <p class="mt-16 text-xl text-gray-700 font-semibold animate-on-scroll" data-delay="450">
-                <span class="text-primary-blue">Kesimpulan:</span> PDC menawarkan <strong class="text-primary-blue">stabilitas dan ketahanan</strong> melalui arsitektur Dual-Component yang terpisah dan teruji.
-            </p>
+            <a href="#integrasi" class="inline-block px-10 py-4 text-lg font-extrabold rounded-lg bg-accent-green hover:bg-dark-pro text-white shadow-xl shadow-accent-green/50 transition-all duration-300 active:scale-95 cta-button">
+                Hubungi Kami Sekarang &rarr;
+            </a>
         </div>
     </section>
 
-    <footer class="py-8 bg-dark-pro text-center text-gray-500">
-        <p>&copy; 2025 PRESENSI DIGITAL CERDAS (PDC) | Solusi Absensi Berbasis Python oleh Rhdevs</p>
+    <section id="arsitektur" class="py-16 bg-white">
+        <div class="w-full mx-auto px-4 text-center">
+             <div class="animate-on-scroll" data-delay="0">
+                <h2 class="text-3xl font-bold mb-2 text-dark-pro">
+                    Arsitektur Hybrid: Desktop GUI & Flask API
+                </h2>
+                <div class="divider-line bg-primary-blue"></div>
+                <p class="text-lg text-gray-600 max-w-xl mx-auto mb-12">
+                    PDC beroperasi dalam mode ganda, memberikan fleksibilitas operasional yang maksimal.
+                </p>
+             </div>
+
+            <div class="grid gap-6 text-left architecture-text">
+                
+                <div class="p-6 border-l-4 border-primary-blue shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="100">
+                    <h3 class="text-xl font-semibold text-primary-blue mb-2">1. Absensi Multi-Klien Fleksibel</h3>
+                    <p class="text-gray-600 text-sm">Sistem utama (GUI Desktop) berjalan berdampingan dengan **Flask API Server** (`launcher.py`). Ini memungkinkan <strong class="text-dark-pro">Absensi Wajah/Barcode dari HP/Web</strong>, sehingga kamera eksternal tidak diperlukan.</p>
+                </div>
+                
+                <div class="p-6 border-l-4 border-accent-green shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="200">
+                    <h3 class="text-xl font-semibold text-accent-green mb-2">2. Stabilitas Multithreading Inti</h3>
+                    <p class="text-gray-600 text-sm">Deteksi wajah, pemrosesan video, dan Flask API berjalan di **Thread** yang terpisah. Ini memastikan GUI <strong class="strong-green">tidak pernah *freeze*</strong> dan absensi *real-time* tetap responsif saat tugas berat (seperti AI) diproses.</p>
+                </div>
+                
+                <div class="p-6 border-l-4 border-primary-blue shadow-elegant rounded-r-lg bg-gray-light animate-on-scroll" data-delay="300">
+                    <h3 class="text-xl font-semibold text-primary-blue mb-2">3. Komunikasi Dua Arah</h3>
+                    <p class="text-gray-600 text-sm">Data Absensi dicatat di **GUI/API**, dan sinyal notifikasi dikirim ke Discord Bot melalui **File Queue** (`notif_queue.json`). Arsitektur terpisah ini menjamin ketahanan sistem: jika salah satu komponen *crash*, yang lain tetap berjalan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="integrasi" class="py-16 bg-white">
+        <div class="w-full mx-auto px-4 text-center">
+             <div class="animate-on-scroll" data-delay="0">
+                <h2 class="text-3xl font-bold mb-2 text-dark-pro">
+                    Arsitektur Deployment yang Kuat & Efisien
+                </h2>
+                <div class="divider-line"></div>
+                <p class="text-lg text-gray-600 max-w-xl mx-auto mb-12">
+                    Sistem kini memiliki struktur <strong class="text-dark-pro">Tiga Komponen</strong> yang tangguh: GUI, Flask API, dan Discord Bot.
+                </p>
+             </div>
+             
+             <div class="w-full border-t-2 border-primary-blue pt-6 mt-6 animate-on-scroll" data-delay="400">
+                 <h3 class="text-2xl font-semibold text-dark-pro mb-3 text-center">Kesimpulan Arsitektur</h3>
+                 <p class="text-xl text-gray-600 text-center">PDC menawarkan <strong class="text-primary-blue">stabilitas, multi-fungsi, dan fleksibilitas *deployment*</strong> melalui arsitektur Hybrid yang memungkinkan absensi dari PC utama maupun perangkat mobile.</p>
+             </div>
+        </div>
+    </section>
+
+    <footer class="py-6 bg-dark-pro text-center text-gray-500 animate-fade-in-up" style="animation-delay: 0.1s;">
+        <p class="text-xs">&copy; 2025 PRESENSI DIGITAL CERDAS (PDC) | Solusi Absensi Berbasis Python oleh Rhdevs</p>
     </footer>
 
     <div id="imageModal" class="modal">
@@ -340,6 +434,10 @@
                         const delay = entry.target.getAttribute('data-delay') || 0;
                         setTimeout(() => {
                             entry.target.classList.add('animated');
+                            const divider = entry.target.querySelector('.divider-line');
+                            if (divider) {
+                                divider.classList.add('animated');
+                            }
                             entry.target.classList.remove('animate-on-scroll');
                         }, parseInt(delay));
                         observer.unobserve(entry.target); 
@@ -348,7 +446,13 @@
             }, observerOptions);
 
             elements.forEach(el => {
-                observer.observe(el);
+                if (!el.classList.contains('animated')) {
+                    observer.observe(el);
+                }
+            });
+            
+            document.querySelectorAll('[style*="animation-delay"]').forEach(el => {
+                el.style.opacity = 1; 
             });
         });
 
@@ -367,7 +471,7 @@
 
         // Tutup modal ketika user mengklik di luar gambar
         modal.onclick = function(event) {
-          if (event.target == modal) {
+          if (event.target == modal || event.target == modal.querySelector('.close')) {
             closeModal();
           }
         }
